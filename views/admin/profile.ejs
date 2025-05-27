@@ -1,0 +1,115 @@
+<% layout('/layouts/boilerplate.ejs') %>
+
+<div class="container py-5">
+    <div class="row g-5">
+
+        <!-- Profile Sidebar -->
+        <div class="col-lg-5">
+            <div class="card card-bordered">
+                <div class="card-body text-center p-4">
+                    <img src="/Background.png" class="rounded-circle border border-3 mb-3" alt="Profile Picture"
+                        width="100" height="100">
+                    <h4 class="text-dark fs-5 mb-1">
+                        <%= req.session.admin.adminname %>
+                    </h4>
+                    <small class="text-muted fs-mobile-sm d-block mb-2">Joined:
+                        <%= new Date(req.session.admin.enrolled).toDateString() || 'N/A' %>
+                    </small>
+                   
+                    <a href="/admin/users" class="btn btn-outline-danger">Reported Users</a>
+                    <a href="/admin/posts" class="btn btn-outline-danger">Reported Posts</a>
+                     
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Admin Review Section -->
+        <div class="col-lg-7">
+            <div class="card card-bordered">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-secondary mb-4 border-bottom pb-2 fs-5">
+                        <i class="bi bi-calendar2-week me-2"></i>
+                        Review Requests
+                    </h3>
+
+                    <% if (requests && requests.length > 0) { 
+                        const sorted = requests.sort((a, b) => {
+                            const order = { 'pending': 0, 'approved': 1, 'rejected': 2 };
+                            return order[a.status] - order[b.status];
+                        });
+                    %>
+
+                        <% sorted.forEach(request => { %>
+                            <div class="card mb-4 card-bordered shadow-sm">
+                                <div class="card-body">
+                                
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0 text-muted">Request ID:<a style="color:red" href="/admin/requests/<%=request._id%>"> <%= request._id%></a></h6>
+                                        <span class="badge 
+                                            <%= request.status === 'pending' ? 'bg-warning text-dark' :
+                                                 request.status === 'approved' ? 'bg-success' :
+                                                 'bg-danger' %>">
+                                            <%= request.status.charAt(0).toUpperCase() + request.status.slice(1) %>
+                                        </span>
+                                    </div>
+
+                                    <!-- Request Summary -->
+                                    <div class="mb-3">
+                                        <% 
+                                            let icon = "", actionText = "";
+
+                                            if (request.type === 'add') {
+                                                icon = "bi bi-plus-circle";
+                                                actionText = "Request to add a new campground.";
+                                            } else if (request.type === 'edit') {
+                                                icon = "bi bi-pencil-square";
+                                                actionText = `Request to edit campground "<a href='/campgrounds/${request.campgroundId?._id}' class='text-decoration-none'>${request.campgroundId?.title || 'Unknown'}</a>".`;
+                                            } else if (request.type === 'delete') {
+                                                icon = "bi bi-trash";
+                                                actionText = `Request to delete campground "<a href='/campgrounds/${request.campgroundId?._id}' class='text-decoration-none'>${request.campgroundId?.title || 'Unknown'}</a>".`;
+                                            }
+                                        %>
+
+                                        <p class="mb-1 fs-6">
+                                            <i class="<%= icon %> text-primary me-2"></i>
+                                            <%- actionText %>
+                                        </p>
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>
+                                            Created on: <%= new Date(request.createdAt).toDateString() %>
+                                        </small>
+                                    </div>
+
+                                    <!-- Admin Buttons -->
+                                    <% if (request.status === 'pending') { %>
+                                        <div class="d-flex justify-content-end mt-3 gap-2">
+                                            <form action="/admin/requests/<%= request._id %>/approve" method="POST">
+                                                <button class="btn btn-outline-success btn-sm">
+                                                    <i class="bi bi-check2-circle me-1"></i> Approve
+                                                </button>
+                                            </form>
+                                            <form action="/admin/requests/<%= request._id %>/reject" method="POST">
+                                                <button class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-x-circle me-1"></i> Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                    <% } %>
+
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="alert alert-warning text-center fs-mobile-md">
+                            <i class="bi bi-info-circle me-2"></i> No requests found
+                        </div>
+                    <% } %>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

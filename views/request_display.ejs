@@ -1,0 +1,83 @@
+<% layout('./layouts/boilerplate.ejs') %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-file-text me-2"></i>Request Details</h5>
+        </div>
+
+        <div class="card-body">
+
+          <!-- Request ID -->
+          <div class="mb-3">
+            <label class="form-label text-muted">Request ID</label>
+            <div class="fw-semibold"><code><%= request._id %></code></div>
+          </div>
+
+          <!-- Campground (if applicable) -->
+          <% if (request.campgroundId) { %>
+            <div class="mb-3">
+              <label class="form-label text-muted">Campground</label>
+              <div>
+                <a href="/campgrounds/<%= request.campgroundId._id %>" class="text-decoration-none">
+                  <%= request.campgroundId.title || 'Unknown' %>
+                </a>
+              </div>
+            </div>
+          <% } %>
+
+          <!-- Host -->
+          <div class="mb-3">
+            <label class="form-label text-muted">Requested By (Host ID)</label>
+            <div><%= request.hostId %></div>
+          </div>
+
+          <!-- Type -->
+          <div class="mb-3">
+            <label class="form-label text-muted">Request Type</label>
+            <span class="badge bg-info text-dark text-uppercase"><%= request.type %></span>
+          </div>
+
+          <!-- Body (if any) -->
+          <% if (request.body) { %>
+            <div class="mb-3">
+              <label class="form-label text-muted">Submitted Data</label>
+              <pre class="bg-light p-2 rounded border"><%= JSON.stringify(request.body, null, 2) %></pre>
+            </div>
+          <% } %>
+
+          <!-- Status -->
+          <div class="mb-3">
+            <label class="form-label text-muted">Status</label>
+            <span class="badge 
+              <%= request.status === 'pending' ? 'bg-warning text-dark' :
+                  request.status === 'approved' ? 'bg-success' :
+                  request.status === 'rejected' ? 'bg-danger' : 
+                  'bg-secondary' %>">
+              <%= request.status.charAt(0).toUpperCase() + request.status.slice(1) %>
+            </span>
+          </div>
+
+          <!-- Settled By -->
+          <% if (request.settledby) { %>
+            <div class="mb-3">
+              <label class="form-label text-muted">Settled By (Admin ID)</label>
+              <div><%= request.settledby %></div>
+            </div>
+          <% } %>
+
+          <!-- Created At -->
+          <div class="mb-3">
+            <label class="form-label text-muted">Created At</label>
+            <div><%= new Date(request.createdAt).toLocaleString() %></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

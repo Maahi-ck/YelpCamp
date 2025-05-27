@@ -1,0 +1,28 @@
+  <% layout('./layouts/boilerplate.ejs') %>
+     <div class="container text-center d-flex justify-content-center align-items-center flex-column" >
+  <div>
+    <div class="row mb-4">
+      <div class="col">
+        <img src="https://www.shutterstock.com/shutterstock/photos/2558276879/display_1500/stock-vector-red-robot-robot-error-broken-disruption-system-error-connection-not-connected-technology-2558276879.jpg" 
+             alt="Error Robot"
+             class="img-fluid" 
+             style="max-height: 400px;">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h1><%= err.status %></h1>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col">
+        <h3>Oops...</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <p><%= err.message %></p>
+      </div>
+    </div>
+  </div>
+</div>

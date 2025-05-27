@@ -1,0 +1,105 @@
+<% layout('./layouts/boilerplate.ejs') %>
+
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="row justify-content-center w-100">
+            <div class="col-xs-4 col-md-4 col-lg-6">
+                <form class="p-4 shadow rounded bg-white" enctype="multipart/form-data"  method="POST" action="/Users/Profile/<%=req.session.user.username%>" id="uf">
+                    <h3 class="text-center mb-4">Settings</h3>
+
+                    <!-- targetUsername -->
+                    <div class="mb-3">
+                        <label for="targetUsername" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="visible-addon">@</span>
+                            <input type="text" class="form-control" id="targetUsername" name="user[newusername]"
+                                value="<%=req.session.user.username%>" required>
+                        </div>
+                    </div>
+
+                     <div class="mb-3">
+                        <label for="Email" class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="visible-addon">@</span>
+                            <input type="email" class="form-control"  name="user[email]"
+                                value="<%=req.session.user.email%>" required>
+                        </div>
+                    </div>
+
+                     <div class="mb-3">
+                        <label for="password1" class="form-label">ProfilePicture</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="user[profilepic]" value="yes">
+                        </div>
+                    </div>
+
+                    <!-- Password 1 -->
+                    <div class="mb-3">
+                        <label for="password1" class="form-label">Current Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password1" name="user[oldpassword]"
+                                placeholder="Enter password" required>
+                            <button class="btn btn-outline-secondary toggle-btn" type="button" data-target="password1">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Password 2 -->
+                    <div class="mb-3">
+                        <label for="password2" class="form-label">New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password2" placeholder="Enter New password"
+                                name="user[newpassword]">
+                            <button class="btn btn-outline-secondary toggle-btn" type="button" data-target="password2">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="password2" class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password4" placeholder="Confirm password"
+                                name="user[confirmpassword]">
+                            <button class="btn btn-outline-secondary toggle-btn" type="button" data-target="password4">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" name="removal">
+                        <label class="form-check-label"  for="rememberMe">Remove Profile Pic</label>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn btn-primary w-100">
+                        Update
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container d-flex justify-content-center align-items-center mt-5">
+        <div class="row justify-content-center w-100">
+            <div class="col-xs-4 col-md-4 col-lg-6">
+                <form id="df" class="p-4 shadow rounded bg-white" method="POST"
+                    action="/Users/Profile/<%=targetUsername%>?_method=DELETE">
+                    <div class="mb-3">
+                        <label for="password1" class="form-label">Current Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password3" name="password"
+                                placeholder="Enter password" required>
+                            <button class="btn btn-outline-secondary toggle-btn" type="button" data-target="password3">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,417 @@
+
+    @media (max-width: 1080px) {
+      * {
+        font-size: 16px !important;
+
+      }
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+ 
+
+    .here {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      /* width: 100vw; */
+      margin-top: 3vh;
+      min-height: 80vh;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+
+    nav.navbar {
+      min-height: 10vh;
+      transition: height 0.3s ease;
+    }
+
+    main {
+
+      border-radius: 20px !important;
+      width: 95vw;
+    }
+
+
+    td {
+      font-family: "'Roboto Mono', Consolas, 'Courier New', monospace";
+    }
+
+    .card-img-top {
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    * {
+      transition: 0.001s ease-in-out;
+      font-weight: 200;
+    }
+
+    .search-bar {
+      transition: width 0.3s ease-in-out;
+      width: 40px;
+    }
+
+    .search-bar:focus {
+      width: 250px;
+    }
+
+    .profile-card,
+    .trip-card {
+      border-radius: 1rem;
+      border: 1px solid #dee2e6;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .profile-card:hover,
+    .trip-card:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .trip-header a:hover {
+      text-decoration: underline;
+    }
+
+    .card-bordered {
+      border: 1px solid #d1d5db !important;
+      /* Tailwind's slate-300 */
+      border-radius: 1rem !important;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease-in-out;
+    }
+
+    .card-bordered:hover {
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .badge-rounded {
+      padding: 0.4rem 0.8rem;
+      border-radius: 50rem;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 576px) {
+      .fs-mobile-sm {
+        font-size: 0.9rem;
+      }
+
+      .fs-mobile-md {
+        font-size: 1rem;
+      }
+
+      .fs-mobile-lg {
+        font-size: 1.15rem;
+      }
+    }
+
+    @media (min-width: 577px) {
+      .fs-mobile-sm {
+        font-size: 1rem;
+      }
+
+      .fs-mobile-md {
+        font-size: 1.1rem;
+      }
+
+      .fs-mobile-lg {
+        font-size: 1.25rem;
+      }
+    }
+
+    a {
+      color: black;
+      font-weight: 300;
+    }
+
+    .card-bordered {
+      border: 1px solid #d1d5db;
+      border-radius: 1rem;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+      transition: 0.2s ease-in-out;
+    }
+
+    .card-bordered:hover {
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .badge-rounded {
+      padding: 0.4rem 0.8rem;
+      border-radius: 50rem;
+      font-size: 0.85rem;
+    }
+
+    a {
+      color: black;
+      font-weight: 300;
+      text-decoration: none;
+    }
+
+
+
+    .fs-mobile-sm {
+      font-size: 0.95rem;
+    }
+
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .follower-img {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .card-bordered {
+      border: 1px solid #d1d5db;
+      border-radius: 1rem;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+      transition: 0.2s ease-in-out;
+    }
+
+    .card-bordered:hover {
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .badge-rounded {
+      padding: 0.4rem 0.8rem;
+      border-radius: 50rem;
+      font-size: 0.85rem;
+    }
+
+    a {
+      color: black;
+      font-weight: 300;
+      text-decoration: none;
+    }
+
+
+
+    .fs-mobile-sm {
+      font-size: 0.95rem;
+    }
+
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .following-img {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      filter: invert(1) brightness(2);
+    }
+
+    .carousel-indicators button,
+    .carousel-indicators .active {
+      background-color: white;
+    }
+
+    .carousel-caption {
+      color: white;
+    }
+
+    main {
+      border-radius: 20px !important;
+      margin: 70px;
+    }
+
+    td {
+      font-family: "'Roboto Mono', Consolas, 'Courier New', monospace";
+    }
+
+    .card-img-top {
+      height: 200px;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .footer {
+      background: linear-gradient(to right, #1a1c20, #2c3e50);
+      color: #ffffff;
+      padding: 30px 0 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, #3498db, #2ecc71);
+    }
+
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .footer-about {
+      color: #a4b5c6;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .footer h5 {
+      color: #ffffff;
+      font-weight: 600;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .footer h5::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      width: 30px;
+      height: 2px;
+      background: #3498db;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      color: #a4b5c6;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .footer-links a:hover {
+      color: #3498db;
+      transform: translateX(5px);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-icon {
+      width: 35px;
+      height: 35px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      background: #3498db;
+      transform: translateY(-3px);
+      color: #fff;
+    }
+
+    .footer-newsletter {
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .footer-newsletter input {
+      padding: 12px 15px;
+      border-radius: 25px;
+      border: none;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      outline: none;
+      padding-right: 50px;
+    }
+
+    .footer-newsletter input::placeholder {
+      color: #a4b5c6;
+    }
+
+    .newsletter-btn {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      bottom: 5px;
+      width: 40px;
+      border-radius: 50%;
+      background: #3498db;
+      border: none;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .newsletter-btn:hover {
+      background: #2980b9;
+    }
+
+    .footer-bottom {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      color: #a4b5c6;
+    }
+
+    .footer-bottom-links {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .footer-bottom-links a {
+      color: #a4b5c6;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-bottom-links a:hover {
+      color: #3498db;
+    }
+
+    @media (max-width: 768px) {
+      .footer-section {
+        margin-bottom: 40px;
+      }
+    }

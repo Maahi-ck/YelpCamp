@@ -1,0 +1,27 @@
+<nav class="navbar fixed-top navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">YelpCamp Host Section</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button> 
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link active" aria-current="page" href="/">Home</a>
+        <a class="nav-link active" aria-current="page" href="/host/campgrounds">Campgrounds</a>
+        <a class="nav-link active" aria-current="page" href="/host/campgrounds/new">Create</a>
+        
+        <% if(req.session.host){ %>
+          <a class="nav-link" href="/host/Profile/<%=req.session.host.username%>">Profile</a>
+          <a class="nav-link" href="/host/logout">Logout</a>
+          <% }else{ %>
+            <a class="nav-link" href="/host/login">Sign in</a>
+            <% } %>
+
+           
+      </div>
+    </div>
+  </div>
+</nav>
+
+

@@ -1,0 +1,71 @@
+<% layout("/layouts/boilerplate.ejs") %>
+  <div class="container my-5">
+    <div class="card shadow-lg">
+      <div class="card-body p-5">
+        <h1 class="mb-4 text-center">Create New Campground</h1>
+
+        <form class="needs-validation" novalidate action="/host/campgrounds/null/newrequest/add" method="POST" enctype="multipart/form-data">
+          <div class="mb-4">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="Campground[title]"
+              placeholder="Enter campground title" required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Title is required.</div>
+          </div>
+
+          <div class="mb-4">
+            <label for="price" class="form-label">Price</label>
+            <input type="number" class="form-control" id="price" name="Campground[price]" placeholder="Enter price"
+              required min="0">
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Price is required and must be non negative</div>
+          </div>
+
+          <div class="mb-4">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="Campground[description]" rows="3"
+              placeholder="Enter description" required></textarea>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Description is required.</div>
+          </div>
+
+          <div class="mb-4">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="Campground[location]"
+              placeholder="Enter location" required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Location is required.</div>
+          </div>
+
+
+            <div id="imageUploadSection" class="mb-4">
+                        <label class="form-label">Add Image URLs</label>
+                        <div id="imageInputs">
+                            <div class="input-group mb-2">
+                                <input type="file" name="Campground[images]" class="form-control"
+                                    placeholder="Enter image URL" required multiple>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+          <div class="text-center">
+            <button class="btn btn-success px-5 py-2" type="submit">Add CampGround</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+   <script>
+        document.getElementById('addImageBtn').addEventListener('click', () => {
+            const container = document.getElementById('imageInputs');
+            const inputGroup = document.createElement('div');
+            inputGroup.classList.add('input-group', 'mb-2');
+            inputGroup.innerHTML = `
+      <input type="url" name="Campground[images][]" class="form-control" placeholder="Enter image URL" required>
+    `;
+            container.appendChild(inputGroup);
+        });
+    </script>

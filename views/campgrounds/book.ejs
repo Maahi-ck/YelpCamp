@@ -1,0 +1,140 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+    <div class="container my-5">
+        <div class="card shadow-lg">
+            <div class="card-body p-5">
+                <h1 class="mb-4 text-center">
+                    <%= camp.title %>
+                </h1>
+
+                <form id="tripBookingForm" class="needs-validation" novalidate
+                    action="/campgrounds/<%= camp._id %>/book" method="POST">
+
+                    <!-- Trip Date -->
+                    <div class="mb-4">
+                        <label for="date" class="form-label">Trip Date</label>
+                        <input type="date" class="form-control" id="date" name="trip[date]" required>
+                        <div class="invalid-feedback">Date is required.</div>
+                    </div>
+
+                    <!-- Number of Days -->
+                    <div class="mb-4">
+                        <label for="days" class="form-label">Number of Days</label>
+                        <input type="number" class="form-control" id="days" name="trip[days]" min="1" required>
+                        <div class="invalid-feedback">Please enter a valid number of days.</div>
+                    </div>
+
+                    <!-- Show Price -->
+                    <div class="mb-4">
+                        <label class="form-label">Total Price</label>
+                        <input type="text" class="form-control" id="totalPrice" readonly>
+                    </div>
+
+                    <!-- Participants -->
+                    <div id="participantsSection" class="mb-4">
+                        <label class="form-label">Add Participants</label>
+                        <div id="participantInputs">
+                            <div class="input-group mb-2">
+                                <input type="text" name="trip[users][]" class="form-control username-input"
+                                    placeholder="Enter username" required>
+                                <span class="input-group-text status-text">⏳</span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="addParticipantBtn">+ Add
+                            More</button>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <div class="mb-4">
+                        <label for="card" class="form-label">Card Number</label>
+                        <input type="text" class="form-control" id="card" placeholder="1234 5678 9012 3456" required>
+                        <div class="invalid-feedback">Card number is required.</div>
+                    </div>
+
+                    <div class="text-center">
+                        <button id="payNow" type="button" class="btn btn-primary px-4 mb-3">Pay Now</button><br>
+                        <button id="bookBtn" class="btn btn-success px-5 py-2" type="submit" disabled>Book Trip</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').setAttribute('min', today);
+
+            const campPrice = "<%= camp.price %>";
+            const daysInput = document.getElementById('days');
+            const totalPrice = document.getElementById('totalPrice');
+            const cardInput = document.getElementById('card');
+            const payBtn = document.getElementById('payNow');
+            const bookBtn = document.getElementById('bookBtn');
+
+            // Calculate total price
+            daysInput.addEventListener('input', () => {
+                const days = parseInt(daysInput.value) || 0;
+                totalPrice.value = "₹" + (days * campPrice);
+            });
+
+            // Fake payment processor
+            payBtn.addEventListener('click', () => {
+                const card = cardInput.value.trim();
+                if (card.length < 12) {
+                    cardInput.classList.add('is-invalid');
+                    return;
+                }
+                cardInput.classList.remove('is-invalid');
+                cardInput.classList.add('is-valid');
+
+                payBtn.textContent = "Processing...";
+                payBtn.disabled = true;
+
+                setTimeout(() => {
+                    payBtn.textContent = "Paid ✅";
+                    payBtn.classList.remove('btn-primary');
+                    payBtn.classList.add('btn-success');
+                    bookBtn.disabled = false;
+                }, 1000); // Simulated delay
+            });
+
+            // Add more participants
+            const addBtn = document.getElementById('addParticipantBtn');
+            const inputsContainer = document.getElementById('participantInputs');
+
+            addBtn.addEventListener('click', () => {
+                const div = document.createElement('div');
+                div.classList.add('input-group', 'mb-2');
+                div.innerHTML = `
+                <input type="text" name="trip[users][]" class="form-control username-input" placeholder="Enter username" required>
+                <span class="input-group-text status-text">⏳</span>
+            `;
+                inputsContainer.appendChild(div);
+            });
+
+            // Live username validation
+            inputsContainer.addEventListener('input', async (e) => {
+                if (e.target.classList.contains('username-input')) {
+                    const input = e.target;
+                    const statusSpan = input.nextElementSibling;
+                    const username = input.value.trim();
+
+                    if (username.length < 1) {
+                        statusSpan.textContent = "⏳";
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch(`/users/check?username=${encodeURIComponent(username)}`);
+                        const data = await res.json();
+                        statusSpan.textContent = data.exists ? "✅ User exists" : "❌ Not found";
+                        statusSpan.style.color = data.exists ? "green" : "red";
+                    } catch (err) {
+                        statusSpan.textContent = "⚠️ Error";
+                        statusSpan.style.color = "orange";
+                    }
+                }
+            });
+        });
+    </script>

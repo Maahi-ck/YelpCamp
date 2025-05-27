@@ -1,0 +1,175 @@
+<% layout('./layouts/boilerplate.ejs') %>
+
+  <div class="container py-5">
+    <div class="row g-5">
+
+      <!-- Profile Sidebar -->
+      <div class="col-lg-5">
+        <div class="card card-bordered">
+          <div class="card-body text-center p-4">
+            <img src="<%= user.profilepic %>" class="rounded-circle border border-3 mb-3" alt="Profile Picture"
+              width="100" height="100">
+            <h4 class="text-dark fs-5 mb-1">
+              <%= targetUsername %>
+            </h4>
+            <% if(curr===false){ if(following){ %>
+              <form action="/Users/Profile/<%= targetUsername %>/unfollow?_method=PUT" method="POST">
+                <button class="btn btn-outline-primary btn-sm m-4"> unfollow</button>
+              </form>
+
+              </a>
+              <% }else{ %>
+                <a href="/Users/Profile/<%= targetUsername %>/follow" class="btn btn-outline-primary btn-sm m-4">
+                  follow
+                </a>
+                <% } } %>
+                  <small class="text-muted fs-mobile-sm d-block mb-2">Joined: <%= user.enrolled?.toDateString() || 'N/A'
+                      %>
+                  </small>
+                  <hr>
+                  <ul class="list-group list-group-flush text-start small">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-geo-alt-fill me-2"></i>Trips</span>
+                      <span class="badge bg-primary badge-rounded">
+                        <%= user.trips?.length || 0 %>
+                      </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-people-fill me-2"></i>
+                        <% if (curr || following) { %>
+                          <a href="/Users/Profile/<%= targetUsername %>/followers">Followers</a>
+                          <% } else { %>
+                            <a>Followers</a>
+                            <% } %>
+                      </span>
+                      <span class="badge bg-success badge-rounded">
+                        <%= user.followers?.length || 0 %>
+                      </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-person-check-fill me-2"></i>
+                        <% if (curr || following) { %>
+                          <a href="/Users/Profile/<%= targetUsername %>/following">Following</a>
+                          <% } else { %>
+                            <a>Following</a>
+                            <% } %>
+                      </span>
+                      <span class="badge bg-info text-dark badge-rounded">
+                        <%= user.following?.length || 0 %>
+                      </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-image me-2"></i>
+                        <% if(curr || following){ %>
+                          <a href="/Users/Profile/<%= targetUsername %>/posts">Posts</a>
+                          <%}else{ %>
+                            <a>Posts</a>
+                            <% }%>
+                      </span>
+                      <span class="badge bg-warning text-dark badge-rounded">
+                        <%= user.posts?.length || 0 %>
+                      </span>
+                    </li>
+                  </ul>
+
+                  <% if (curr===true) { %>
+
+                    <a href="/Users/Profile/<%= targetUsername %>/settings" class="btn btn-outline-primary btn-sm mt-4">
+                      <i class="bi bi-gear-fill me-1"></i> Settings
+                    </a>
+
+
+
+                    <% }else{ %>
+                      <form action="/Users/<%=targetUsername%>/report" method="POST">
+                         <button class="btn btn-outline-danger" type="submit">Report</button>
+                      </form>
+                       
+                    <%} %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trips Section -->
+      <div class="col-lg-7">
+        <div class="card card-bordered">
+          <div class="card-body p-4">
+            <h3 class="card-title text-secondary mb-4 border-bottom pb-2 fs-5">
+              <i class="bi bi-calendar2-week me-2"></i>
+              <%= curr===false ? "Memories" : "Your Trips" %>
+            </h3>
+
+            <% const tripsToRender=curr ? user.trips : commontrips; %>
+
+              <% if (tripsToRender && tripsToRender.length> 0) { %>
+                <% tripsToRender.forEach(trip=> { %>
+                  <div class="card mb-4 card-bordered">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start flex-wrap">
+
+                        <div class="mb-2">
+                          <% if (trip.destination) { %>
+                            <h5 class="mb-1 text-primary fs-6">
+                              <a href="/campgrounds/<%= trip.destination.id %>" class="text-decoration-none">
+                                <%= trip.destination.title %>
+                              </a>
+                            </h5>
+                            <p class="mb-1 text-muted fs-mobile-sm">
+                              <i class="bi bi-calendar-event me-1"></i>
+                              <%= new Date(trip.date).toDateString() %>
+                            </p>
+                            <p class="mb-1 fs-mobile-sm">
+                              <i class="bi bi-clock-history me-1"></i> Duration: <%= trip.days %> days
+                            </p>
+                            <p class="fs-mobile-sm">
+                              <i class="bi bi-currency-rupee me-1"></i> Price: ₹<%= trip.price %>
+                            </p>
+                            <% } else { %>
+                              <h5 class="mb-1 text-muted fs-6">[Destination deleted or missing]</h5>
+                              <p class="text-danger fs-mobile-sm">
+                                This trip's destination is no longer available.
+                              </p>
+                              <% } %>
+                        </div>
+
+ 
+                      </div>
+                      <div class="d-flex flex-row justify-content-between">
+                        <a href="/Users/Profile/<%= targetUsername %>/<%=trip.id%>/upload"
+                          class="btn btn-outline-primary btn-sm mt-4">
+                          <i class="bi bi-upload"></i> Upload
+                        </a>
+                        <form action="/Users/Profile/<%= targetUsername %>/<%=trip.id%>?_method=DELETE" method="POST">
+                          <button class="btn btn-outline-danger btn-sm mt-4"> <i class="bi bi-x-circle-fill"></i>
+                            Cancel</button>
+                        </form>
+
+                      </div>
+
+                      <!-- Participants -->
+                      <div class="mt-3">
+                        <p class="fw-semibold text-muted mb-1 fs-mobile-sm">Trip Mates:</p>
+                        <div class="d-flex flex-wrap gap-2">
+                          <% trip.users?.forEach(u=> { %>
+                            <a href="/Users/Profile/<%= u.username %>"
+                              class="badge bg-light border text-dark px-3 py-2 text-decoration-none rounded-pill fs-mobile-sm">
+                              <i class="bi bi-person-circle me-1"></i>
+                              <%= u.username %>
+                            </a>
+                            <% }) %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% }) %>
+                    <% } else { %>
+                      <div class="alert alert-warning text-center fs-mobile-md">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <%= curr===false ? "No memories created yet." : "No trips booked yet." %>
+                      </div>
+                      <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

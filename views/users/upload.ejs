@@ -1,0 +1,53 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+    <div class="container my-5">
+        <div class="card shadow-lg">
+            <div class="card-body p-5">
+                <h1 class="mb-4 text-center">Upload</h1>
+
+                <!-- Note enctype is set for file upload -->
+                <form id="tripBookingForm" enctype="multipart/form-data" class="needs-validation" novalidate action="/Users/Profile/<%=req.session.user.username%>/<%=tripid%>/upload" method="POST">
+
+
+                    <!-- Image Upload Section -->
+                    <div id="imageUploadSection" class="mb-4">
+                        <label class="form-label">Add Image URLs</label>
+                        <div id="imageInputs">
+                            <div class="input-group mb-2">
+                                <input type="file" name="images" class="form-control"
+                                    placeholder="Enter image URL" required multiple>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Post Description -->
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Post Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="4"
+                            placeholder="Write something about this trip..." required></textarea>
+                        <div class="invalid-feedback">Description is required.</div>
+                    </div>
+
+
+                    <!-- Submit -->
+                    <div class="text-center">
+                        <button id="bookBtn" class="btn btn-success px-5 py-2" type="submit">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.getElementById('addImageBtn').addEventListener('click', () => {
+            const container = document.getElementById('imageInputs');
+            const inputGroup = document.createElement('div');
+            inputGroup.classList.add('input-group', 'mb-2');
+            inputGroup.innerHTML = `
+      <input type="url" name="images[]" class="form-control" placeholder="Enter image URL" required>
+    `;
+            container.appendChild(inputGroup);
+        });
+    </script>

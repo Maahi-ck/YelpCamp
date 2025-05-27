@@ -1,0 +1,183 @@
+<% layout("/layouts/boilerplate.ejs") %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
+  const campground = <%- JSON.stringify(data) %>; 
+  const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
+  const campData = {
+    coordinates: [<%= data.geometry.coordinates[0] %>, <%= data.geometry.coordinates[1] %>]
+  };
+</script> 
+  
+     <div class="col-md-6 m-auto ">
+  <% if (data.images && data.images.length > 0) { %>
+    <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+      <!-- Indicators --> 
+      <div class="carousel-indicators">
+        <% data.images.forEach((img, i) => { %>
+          <button type="button"
+                  data-bs-target="#carouselExampleDark"
+                  data-bs-slide-to="<%= i %>"
+                  class="<%= i === 0 ? 'active' : '' %>"
+                  aria-current="<%= i === 0 ? 'true' : 'false' %>"
+                  aria-label="Slide <%= i + 1 %>">
+          </button>
+        <% }) %>
+      </div>
+
+      <!-- Images -->
+      <div class="carousel-inner">
+        <% data.images.forEach((img, i) => { %>
+          <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+            <img src="<%= img %>" class="d-block w-100" alt="Slide <%= i + 1 %>">
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  <% } else { %>
+    <p>No images available.</p>
+  <% } %>
+</div>
+
+  
+
+
+
+
+
+    <div class="container py-5">
+
+        <div class="card p-4">
+            <h2 class="card-title text-center mb-4">
+                <%= data.title %>
+            </h2>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <h5 class="text-muted">Price</h5>
+                    <p class="5">$<%= data.price %>/night</p>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-muted">Location</h5>
+                    <p class="5">
+                        <%= data.location %>
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <h5 class="text-muted">Description</h5>
+                    <p class="">
+                        <%= data.description %>
+                    </p>
+                </div>
+                
+              
+                <div class="col-md-4">
+                    <h6 class="text-muted">Rating</h6>
+                    <p class="6">
+                        <%= data.rating %> / 5
+                    </p>
+                </div>
+              
+                <div class="col-md-12 d-flex justify-content-center">
+                    <form action="/campgrounds/<%= data._id %>/book">
+                        <button type="submit" class="btn btn-success">Book</button>
+                    </form>
+                </div>
+              
+               
+            </div>
+        </div>
+    </div>
+
+     <div class="container">
+               <div id="map" class="m-auto " style="min-width:400px;min-height:400px;width:50vw"></div>
+<script src="/javascripts/displaymap.js"></script>
+     </div>
+
+
+    <!-- Leave a Review -->
+    <div class="container py-5 d-flex justify-content-center align-items-center">
+        <div class="card shadow rounded-4 p-4" style="width: 100%; max-width: 500px;">
+            <h4 class="mb-4 text-center text-primary">Leave a Review</h4>
+            <form class="needs-validation" novalidate action="/campgrounds/<%= data._id %>/reviews" method="POST">
+                <div class="mb-3">
+                    <label for="rate" class="form-label">Add your rating (0 to 5)</label>
+                    <input type="number" class="form-control" id="rate" name="Review[rating]" min="0" max="5"
+                        required />
+                    <div class="invalid-feedback">Please enter a rating between 0 and 5.</div>
+                    <div class="valid-feedback">Looks good</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Review</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="Review[body]"
+                        required></textarea>
+                    <div class="invalid-feedback">Review can't be empty.</div>
+                    <div class="valid-feedback">Looks good</div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="container py-5 d-flex justify-content-center align-items-center">
+        <div class="card shadow rounded-4 p-4 w-100" style="max-width: 600px;">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h2 class="mb-5 text-center text-primary border-bottom pb-3">User Reviews</h2>
+
+                    <% if (data.reviews.length===0) { %>
+                        <div class="alert alert-info text-center mb-4">
+                            No reviews yet. Be the first to leave one!
+                        </div>
+                        <% } %>
+
+                            <% for (let each of data.reviews) { %>
+                                <div class="card mb-4 shadow-sm border border-light-subtle rounded-4">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 class="card-title mb-0 text-warning">
+                                                ⭐ <%= each.rating %> / 5
+                                            </h5>
+
+                                        </div>
+                                        <p class="card-text text-secondary 6">
+                                            <%= each.body %>
+                                        </p>
+                                        <p class="card-text text-secondary 6">
+                                            <i class="bi bi-person-circle me-2 text-primary"></i>
+                                            <a href="/Users/Profile/<%= each.author.username %>"
+                                                class="text-decoration-none fw-semibold text-dark">
+                                                <%= each.author.username %>
+                                            </a>
+                                        </p>
+
+                                        <% if ((req.session.user && each.author && req.session.user.username===each.author.username)) { %>
+                                            <form
+                                                action="/campgrounds/<%= data._id %>/reviews/<%= each._id %>?_method=DELETE"
+                                                method="POST">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                            <% } %>
+                                    </div>
+                                </div>
+                                <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   

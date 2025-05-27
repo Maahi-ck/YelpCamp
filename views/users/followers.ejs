@@ -1,0 +1,193 @@
+<% layout('./layouts/boilerplate.ejs') %>
+
+<div class="container py-5 ">
+    <div class="row g-5">
+
+         <!-- Profile Sidebar -->
+      <div class="col-lg-5">
+        <div class="card card-bordered">
+          <div class="card-body text-center p-4">
+            <img src="<%=user.profilepic%>" class="rounded-circle border border-3 mb-3" alt="Profile Picture" width="100"
+              height="100">
+            <h4 class="text-dark fs-5 mb-1">
+              <%= targetUsername %>
+            </h4>
+            <% if(curr===false){
+               if(following){ %>
+              <form action="/Users/Profile/<%= targetUsername %>/unfollow?_method=PUT" method="POST">
+                <button class="btn btn-outline-primary btn-sm m-4">  unfollow</button></form> 
+              
+              </a>
+              <% }else{ %>
+                <a href="/Users/Profile/<%= targetUsername %>/follow" class="btn btn-outline-primary btn-sm m-4">
+                  follow
+                </a>
+                <% } } %>
+                  <small class="text-muted fs-mobile-sm d-block mb-2">Joined: <%= user.enrolled?.toDateString() || 'N/A'
+                      %>
+                  </small>
+                  <hr>
+                  <ul class="list-group list-group-flush text-start small">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-geo-alt-fill me-2"></i>Trips</span>
+                      <span class="badge bg-primary badge-rounded">
+                        <%= user.trips?.length || 0 %>
+                      </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-people-fill me-2"></i>
+                        <% if (curr || following) { %>
+                          <a href="/Users/Profile/<%= targetUsername %>/followers">Followers</a>
+                          <% } else { %>
+                             <a >Followers</a>
+                            <% } %>
+                      </span>
+                      <span class="badge bg-success badge-rounded">
+                        <%= user.followers?.length || 0 %>
+                      </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-person-check-fill me-2"></i>
+                       <% if (curr || following) { %>
+                          <a href="/Users/Profile/<%= targetUsername %>/following">Following</a>
+                          <% } else { %>
+                            <a>Following</a>
+                            <% } %>
+                      </span>
+                      <span class="badge bg-info text-dark badge-rounded">
+                        <%= user.following?.length || 0 %>
+                      </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-image me-2"></i>
+                       <% if(curr || following){ %>
+                        <a href="/Users/Profile/<%= targetUsername %>/posts">Posts</a>
+                         <%}else{ %>
+                           <a >Posts</a>
+                        <% }%> </span>
+                      <span class="badge bg-warning text-dark badge-rounded">
+                        <%= user.posts?.length || 0 %>
+                      </span>
+                    </li>
+                  </ul>
+
+                  <% if (curr===true) { %>
+
+                    <a href="/Users/Profile/<%= targetUsername %>/settings" class="btn btn-outline-primary btn-sm mt-4">
+                      <i class="bi bi-gear-fill me-1"></i> Settings
+                    </a>
+
+
+
+                    <% } %>
+          </div>
+        </div>
+      </div>
+
+        <!-- Right: Followers List -->
+         <div class="col-lg-7">
+      <div class="card card-bordered" style="height:60vh; overflow:auto">
+        <div class="card-body p-4">
+          <div class="d-flex flex-row justify-content-between">
+            <h5 class="text-secondary mb-4 border-bottom pb-2">
+              <i class="bi bi-people"></i> Followers
+            </h5>
+
+            <div class="position-relative" style="max-width: 300px;">
+              <input type="text" class="form-control rounded-pill ps-3 pe-5" placeholder="Search..." aria-label="Search" name="searchTerm" id="usersearchfollower" />
+            </div>
+          </div>
+          <div class="container" id="list">
+              <% if (followers && followers.length > 0) { %>
+            <% followers.forEach(follower => { %>
+              <div class="card mb-3 card-bordered">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <img src="<%= follower.profilepic %>" class="follower-img me-2" alt="follower Pic">
+                    <a href="/Users/Profile/<%= follower.username %>" class="text-dark"><%= follower.username %></a>
+                  </div>
+                  <% if (curr === true) { %>
+                    <form action="/Users/Profile/<%= follower.username %>/remove">
+                      <button class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-x-circle-fill me-1"></i> 
+                      </button>
+                    </form>
+                  <% } %>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="alert alert-warning text-center fs-mobile-sm">
+              <i class="bi bi-info-circle me-2"></i> No followers yet.
+            </div>
+          <% } %>
+          </div>
+          
+
+
+        </div>
+      </div>
+    </div>
+
+    </div>
+</div>
+
+<script>
+  const followersInput = document.getElementById('usersearchfollower');
+  const targetUsername = "<%= targetUsername %>";
+  const isCurr ="<%=curr%>";
+  const listContainer = document.getElementById('list');
+
+  followersInput.addEventListener('input', debounce(async function () {
+    const query = followersInput.value.trim();
+
+    try {
+      const response = await fetch(`/Users/Profile/${encodeURIComponent(targetUsername)}/follow/search?searchTerm=${encodeURIComponent(query)}`);
+      const data = await response.json();
+
+      if (data.length === 0) {
+        listContainer.innerHTML = `
+          <div class="alert alert-warning text-center fs-mobile-sm">
+            <i class="bi bi-info-circle me-2"></i> No Users Found.
+          </div>
+        `;
+        return;
+      }
+
+      // Build HTML for each matching follow
+      const resultsHTML = data.map(follow => `
+        <div class="card mb-3 card-bordered">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <img src="${follow.profilepic}" class="following-img me-2" alt="follow Pic">
+              <a href="/Users/Profile/${follow.username}" class="text-dark">${follow.username}</a>
+            </div>
+            ${isCurr ? `
+              <form action="/Users/Profile/${follow.username}/remove" method="POST">
+                <button class="btn btn-outline-danger btn-sm">
+                  <i class="bi bi-x-circle-fill me-1"></i> 
+                </button>
+              </form>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      // Replace the list content
+      listContainer.innerHTML = resultsHTML;
+
+    } catch (err) {
+      console.error('Failed to fetch or render follows:', err);
+      listContainer.innerHTML = '<div class="alert alert-danger">Failed to load follows</div>';
+    }
+  }, 0));
+
+  function debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+</script>
+

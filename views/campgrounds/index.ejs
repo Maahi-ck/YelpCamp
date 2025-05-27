@@ -1,0 +1,155 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div id="map" style=" width:100%; height:400px"></div>
+<script>
+    const mapboxToken='<%-process.env.MAPBOX_TOKEN%>';
+    const campgrounds= { features : <%- JSON.stringify(data)%>}
+</script>
+<script src="/javascripts/clustermap.js"></script>
+
+<div class="container py-4">
+
+  <!-- Search Bar -->
+  <div class="bg-light d-flex justify-content-between align-items-center p-5" style="height: 10vh;">
+    <h5>Campgrounds</h5>
+    <div class="position-relative">
+      <input type="text"
+             class="form-control rounded-pill search-bar pe-5"
+             placeholder="Search..."
+             aria-label="Search" id="search">
+      <button class="btn position-absolute top-50 end-0 translate-middle-y" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+        </svg>
+      </button>
+    </div>
+    
+  </div>
+
+  <!-- Campgrounds list container -->
+  <div class="row" id="campground-list">
+    <% data.forEach((each, idx) => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100" style="cursor:pointer;" onclick="window.location='/campgrounds/<%= each._id %>'">
+          
+          <!-- Carousel -->
+          <div class="carousel-container" style="height: 40vh; overflow: hidden;">
+            <% if (each.images && each.images.length > 0) { %>
+              <div id="carousel-<%= idx %>" class="carousel slide h-100" data-bs-ride="carousel">
+                
+                <!-- Indicators -->
+                <div class="carousel-indicators">
+                  <% each.images.forEach((img, i) => { %>
+                    <button type="button"
+                            data-bs-target="#carousel-<%= idx %>"
+                            data-bs-slide-to="<%= i %>"
+                            class="<%= i === 0 ? 'active' : '' %>"
+                            aria-current="<%= i === 0 ? 'true' : 'false' %>"
+                            aria-label="Slide <%= i + 1 %>">
+                    </button>
+                  <% }) %>
+                </div>
+
+                <!-- Images -->
+                <div class="carousel-inner h-100">
+                  <% each.images.forEach((img, i) => { %>
+                    <div class="carousel-item <%= i === 0 ? 'active' : '' %> h-100">
+                      <img src="<%= img %>" class="d-block w-100 h-100" style="object-fit: cover;" alt="Slide <%= i + 1 %>">
+                    </div>
+                  <% }) %>
+                </div>
+
+              </div>
+            <% } else { %>
+              <div class="d-flex align-items-center justify-content-center bg-light text-muted h-100">
+                <p class="m-0">No images available</p>
+              </div>
+            <% } %>
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body text-center">
+            <h5 class="card-title mb-0"><%= each.title %></h5>
+          </div>
+
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<script>
+  const campinput = document.querySelector('#search');
+  const listContainer = document.querySelector('#campground-list');
+
+
+  campinput.addEventListener('input', debounce(async function () {
+    const searchTerm = campinput.value.trim();
+
+    
+    const url = searchTerm === '' ? '/campgrounds/all' : `/campgrounds/search?searchTerm=${encodeURIComponent(searchTerm)}`;
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      renderCampgrounds(data);
+    } catch (err) {
+      console.error('Error fetching campgrounds:', err);
+    }
+  },0));
+
+  function renderCampgrounds(data) {
+    listContainer.innerHTML = '';
+
+    if (!data || data.length === 0) {
+      listContainer.innerHTML = '<p class="text-center mt-4">No results found.</p>';
+      return;
+    }
+
+    data.forEach((each, idx) => {
+      const col = document.createElement('div');
+      col.className = 'col-md-4 mb-4';
+
+      col.innerHTML = `
+        <div class="card h-100" style="cursor:pointer;" onclick="window.location='/campgrounds/${each._id}'">
+          <div class="carousel-container" style="height: 40vh; overflow: hidden;">
+            ${each.images && each.images.length ? `
+              <div id="carousel-${idx}" class="carousel slide h-100" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                  ${each.images.map((_, i) => `
+                    <button type="button" data-bs-target="#carousel-${idx}" data-bs-slide-to="${i}" class="${i === 0 ? 'active' : ''}" aria-current="${i === 0}" aria-label="Slide ${i + 1}"></button>
+                  `).join('')}
+                </div>
+                <div class="carousel-inner h-100">
+                  ${each.images.map((img, i) => `
+                    <div class="carousel-item ${i === 0 ? 'active' : ''} h-100">
+                      <img src="${img}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Slide ${i + 1}">
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : `
+              <div class="d-flex align-items-center justify-content-center bg-light text-muted h-100">
+                <p class="m-0">No images available</p>
+              </div>
+            `}
+          </div>
+          <div class="card-body text-center">
+            <h5 class="card-title mb-0">${each.title}</h5>
+          </div>
+        </div>
+      `;
+
+      listContainer.appendChild(col);
+    });
+  }
+
+  // Debounce utility function
+  function debounce(fn, delay) {
+    let timeout;
+    return function (...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+</script>
