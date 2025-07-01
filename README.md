@@ -40,6 +40,14 @@ Welcome to **YelpCamp**, a full-stack web platform where outdoor enthusiasts can
 
 ---
 
+## 📸 Screenshots
+
+You can view screenshots of the project [here](https://drive.google.com/drive/folders/10h3CWRHN-iiAMXz9leIxqRRVdMXwUpwP?usp=drive_link).
+
+> These screenshots showcase key features of the YelpCamp application .
+
+---
+
 ## 🧰 Tech Stack
 
 | Category       | Technologies                                     |
