@@ -13,6 +13,7 @@ const Trip=require('../Models/trip.js');
 const User = require("../Models/user.js");
 const { AdminSchema } = require("../schemas.js");
 const catchAsync = require("../catchAsync.js");
+ 
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
        service: 'gmail',
@@ -118,15 +119,6 @@ router.get('/posts',catchAsync(async(req,res)=>{
        console.log(all);
        res.render('./admin/postlist',{all});
 })) 
-router.get('/campgrounds', catchAsync(async(req, res) => {
-       const all=await Campground.find({}); 
-       res.render('./admin/campgroundlist.ejs',{all});
-}))
-
-router.get('/hosts',catchAsync(async(req,res)=>{
-          const all=await hostModel.find({});
-          res.render('./admin/hostlist.ejs',{all});
-}))
 
 
 router.delete('/users/:username', catchAsync(async (req, res) => {
@@ -251,7 +243,7 @@ router.delete('/hosts/:id', catchAsync(async (req, res) => {
     from: process.env.EMAIL_USER,
     to: host.email,
     subject: 'Account Deletion',
-    text: `Hi ${host.hostname || host.username || 'Host'},\n\nYour Host Account has been deleted for the following reason:\n${msg}`,
+    text: `Hi ${host.hostname || 'Host'},\n\nYour Host Account has been deleted for the following reason:\n${msg}`,
   });
 
   await hostModel.findByIdAndDelete(req.params.id);

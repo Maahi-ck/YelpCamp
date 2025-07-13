@@ -9,7 +9,8 @@ const hostSchema=mongoose.Schema({
         hostname:{
               type:String,
               required:true,
-              unique:true
+              unique:true,
+              index:true
         }
         ,
         password:{
@@ -35,7 +36,8 @@ const hostSchema=mongoose.Schema({
         },
         email:{
            type:String,
-           email:required
+           email:required,
+           index:true
         }
 });
 
@@ -50,7 +52,7 @@ hostSchema.statics.findByHostnameAndValidate = async function({ hostname, passwo
 // Hash password before saving
 hostSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password =bcrypt.hash(this.password, 12);
   next();
 });
 

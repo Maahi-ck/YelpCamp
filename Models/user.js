@@ -3,18 +3,19 @@ const bcrypt = require('bcrypt');
 const trip = require('./trip.js');
 const post = require('./post.js');
 const Review = require('./review.js');
-const passportLocalMongoose = require('passport-local-mongoose');
 const { required } = require('joi');
 
 const userSchema = mongoose.Schema({
   username: {
     type: String,
     required: [true, "UserName Can't be Empty"],
-    unique: true
+    unique: true,
+    index:true
   },
   email:{
        type:String,
-       required:true
+       required:true,
+       index:true
   },
   password: {
     type: String,
@@ -65,9 +66,8 @@ userSchema.statics.findByUsernameAndValidate = async ({ username, password }) =>
 // Hash password before saving
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password =  bcrypt.hash(this.password, 12);
   next();
 });
-userSchema.plugin(passportLocalMongoose);
 const userModel = mongoose.model('user', userSchema);
 module.exports = userModel;

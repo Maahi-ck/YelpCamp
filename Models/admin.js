@@ -7,7 +7,8 @@ const adminSchema=mongoose.Schema({
        adminname:{
           type:String,
           required:true,
-          unique:true
+          unique:true,
+          index:true
        },
        password:{
           type:String,
@@ -31,7 +32,7 @@ adminSchema.statics.findByadminnameAndValidate = async ({ adminname, password })
 // Hash password before saving
 adminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = bcrypt.hash(this.password, 12);
   next();
 });
 

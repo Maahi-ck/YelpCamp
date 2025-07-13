@@ -85,6 +85,7 @@ router.use((req, res, next) => {
 //host must be logged in for these
 
 
+//apis
 router.get('/campgrounds/all', catchAsync(async (req, res) => {
   const allCampgrounds = await Campground.find({ host: req.session.host.id });
   res.json(allCampgrounds);
@@ -102,6 +103,7 @@ router.get('/campgrounds/search',catchAsync(async (req, res) => {
 
     res.send(getall);
 }));
+//----
 
 router.get('/logout', (req, res) => {
 
@@ -115,7 +117,7 @@ router.get('/logout', (req, res) => {
   res.redirect('/');
 
 })
-
+ 
 
 router.post('/campgrounds/:id/newrequest/:typehere',upload.array('Campground[images]'), catchAsync(async (req, res) => {
 
@@ -362,45 +364,6 @@ router.get('/requests/:requestid',catchAsync(async(req,res)=>{
         res.render('./request_display.ejs',{request});
 }))
 
-
-
-router.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) => {
-  const item = req.body.Campground;
-  
-  const campground = new Campground(item);
-
-    await campground.save();
-    req.flash('success', 'Created New Campground Successfully');
-    res.redirect('/host/campgrounds');
-
-}))
-
-
-
-router.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res, next) => {
-  const item = req.body.Campground;
-
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return next(new AppError(400, 'Invalid ID format'));
-  }
-
-  const { title, price, description, location, latitude, longitude, rating, images } = item;
-
-    await Campground.findByIdAndUpdate(req.params.id, {
-      title,
-      price,
-      description,
-      location,
-      latitude,
-      longitude,
-      rating,
-      images
-    }, { runValidators: true });
- 
-  req.flash('success', 'Campground Updated Successfully');
-  res.redirect(`/host/campgrounds/${req.params.id}`);
-}))
-
 router.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     req.flash('error', 'Invalid Id Format');
@@ -419,55 +382,5 @@ router.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
 
 }))
 
-router.delete('/campgrounds/:id', catchAsync(async (req, res, next) => {
-  const campgroundId = req.params.id;
-
-  if (!mongoose.Types.ObjectId.isValid(campgroundId)) {
-    return next(new AppError(400, 'Invalid Campground ID format'));
-  }
-
-
-    const campground = await Campground.findById(campgroundId);
-    if (!campground) {
-      return next(new AppError(404, 'Campground not found'));
-    }
-
-    // 1. Delete reviews associated with this campground
-    await Review.deleteMany({ _id: { $in: campground.reviews } });
-
-    // 2. Find trips associated with this campground
-    const tripsToDelete = await Trip.find({ destination: campgroundId });
-    const tripIds = tripsToDelete.map(trip => trip._id);
-
-    // 2.1 Remove each trip from all users' trip lists
-    for (let trip of tripsToDelete) {
-      for (let userId of trip.users) {
-        const user = await User.findById(userId);
-        if (user) {
-          user.trips.pull(trip._id);
-          await user.save();
-        }
-      } 
-    }
-
-    // 3. Delete posts related to those trips
-    const allposts = await postModel.find({ tripid: { $in: tripIds } });
-    for (let each of allposts) {
-      const user = await User.findById(each.useruploaded);
-      user.posts.pull(each.id);
-      await user.save();
-    }
-    await postModel.deleteMany({ tripid: { $in: tripIds } });
-
-
-    // 4. Delete the trips themselves
-    await Trip.deleteMany({ _id: { $in: tripIds } });
-
-    // 5. Delete the campground
-    await Campground.findByIdAndDelete(campgroundId);
-
-    req.flash('success', 'Campground and all related data deleted successfully');
-    res.redirect('/host/campgrounds');
-}));
 
 module.exports = router;

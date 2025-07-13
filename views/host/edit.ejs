@@ -71,15 +71,3 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.getElementById('addImageBtn').addEventListener('click', () => {
-            const container = document.getElementById('imageInputs');
-            const inputGroup = document.createElement('div');
-            inputGroup.classList.add('input-group', 'mb-2');
-            inputGroup.innerHTML = `
-      <input type="url" name="Campground[images][]" class="form-control" placeholder="Enter image URL" required>
-    `;
-            container.appendChild(inputGroup);
-        });
-    </script>

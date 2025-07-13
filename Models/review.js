@@ -15,7 +15,8 @@ const reviewSchema = new Schema({
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user'
+    ref: 'user',
+    required:true
   },
   campground: {
     type: mongoose.Schema.Types.ObjectId,

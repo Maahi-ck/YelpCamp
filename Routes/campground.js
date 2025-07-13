@@ -36,7 +36,6 @@ router.get('/all', catchAsync(async (req, res) => {
 }));
  
 router.get('/search', catchAsync(async (req, res) => {
-
   const searchTerm = req.query.searchTerm || '';
     const getall = await Campground.find({
       title: { $regex: searchTerm, $options: 'i' } // case-insensitive search
@@ -49,7 +48,6 @@ router.get('/search', catchAsync(async (req, res) => {
 //---------------------------------------------------------------------
 
 router.get('/', catchAsync(async (req, res, next) => {
-
     const data = await Campground.find({});
     res.render('./campgrounds/index.ejs', { data });
 
@@ -270,9 +268,6 @@ router.post('/:id/book', catchAsync(async (req, res) => {
 
 
   const pdfBuffer = await generateTripPDF(trip, userDocs, camp, campImageBuffers);
-
-  
-
 
   for(let each of trip.users){
       let curruser= (await User.findById(each));

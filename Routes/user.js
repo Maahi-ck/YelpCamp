@@ -137,29 +137,23 @@ router.use(catchAsync(async (req, res, next) => {
     const profileMatch = req.path.match(/^\/Profile\/([^\/]+)/);
     let targetUsername = profileMatch ? profileMatch[1] : null;
     let currentUsername = req.session.user ? req.session.user.username : null;
-    res.locals.user = await User.findOne({ username: targetUsername });
     const targetUser = await User.findOne({ username: targetUsername });
+     res.locals.user = targetUser
     const currentUser = await User.findOne({ username: currentUsername });
     res.locals.targetUser = targetUser;
     res.locals.currentUser = currentUser;
 
     res.locals.currentUsername = currentUsername;
-    
-
     res.locals.targetUsername = targetUsername;
     if (targetUsername && currentUsername) {
         res.locals.curr = targetUsername === currentUsername;
 
         if (!res.locals.curr) {
-            try {
                 if (targetUser && currentUser) {
                     res.locals.following = targetUser.followers.some(followerId =>
                         followerId.toString() === currentUser._id.toString()
                     );
                 }
-            } catch (err) {
-                console.error('Error in global middleware:', err);
-            }
         }
     }
 
@@ -773,7 +767,7 @@ router.delete('/Profile/:username/posts/:postid', catchAsync(async (req, res, ne
     await postModel.findByIdAndDelete({ _id: req.params.postid });
     const user = await User.findOne({ username: req.params.username });
     user.posts.pull(req.params.postid);
-    user.save();
+    await user.save();
     req.flash('success', 'Post Deleted Successfully');
     res.redirect(`/Users/Profile/${req.params.username}/posts`);
 

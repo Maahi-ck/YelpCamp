@@ -2,13 +2,15 @@
 const mongoose=require("mongoose");
 const Review=require('./review.js');
 const user=require('./user.js');
-const { CampgroundSchema } = require("../schemas.js");
+ 
 const schema= mongoose.Schema;
 const opts={ toJSON:{virtuals:true} };
+
 const campgroundSchema=new schema({
       title:{
              type:String,
-             required:true
+             required:true,
+             index:true
       },
       price:{
              type:Number,
